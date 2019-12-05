@@ -92,3 +92,11 @@ Closures: This is a cool feature I love from learning in the book
 
     // Calling it outputs the greeting:
     hello("dear, future Reader!"); // => Hello dear, future Reader!
+
+## Major parts of the interpreter
+
+* the lexer
+* the parser
+* the Abstract Syntax Tree (AST)
+* the internal object system
+* the evaluator
