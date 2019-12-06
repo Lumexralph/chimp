@@ -3,9 +3,9 @@ package token
 import "testing"
 
 func TestLookupIdentifier(t *testing.T) {
-	cases := []struct{
+	cases := []struct {
 		ident string
-		want Type
+		want  Type
 	}{
 		{"fn", FUNCTION},
 		{"let", LET},
@@ -13,7 +13,7 @@ func TestLookupIdentifier(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		t.Run("Lookup the type of the token", func(t *testing.T){
+		t.Run("Lookup the type of the token", func(t *testing.T) {
 			got := LookupIdentifier(tc.ident)
 
 			if got != tc.want {

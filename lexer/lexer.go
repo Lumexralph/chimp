@@ -115,7 +115,7 @@ func (l *Lexer) readIdentifier() string {
 	return l.input[position:l.position]
 }
 
-func(l *Lexer) readNumber() string {
+func (l *Lexer) readNumber() string {
 	position := l.position
 
 	for isDigit(l.char) {
@@ -130,7 +130,7 @@ Sometimes it’s called eatWhitespace and sometimes consumeWhitespace
 and sometimes something entirely different. Which characters these
 functions actually skip depends on the language being lexed.
 */
-func(l *Lexer) skipWhiteSpace() {
+func (l *Lexer) skipWhiteSpace() {
 	for l.char == ' ' || l.char == '\t' || l.char == '\n' || l.char == '\r' {
 		l.readChar()
 	}

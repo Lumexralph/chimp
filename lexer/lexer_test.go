@@ -1,10 +1,12 @@
 package lexer
 
-import "testing"
+import (
+	"testing"
 
-import "github.com/Lumexralph/chimp/token"
+	"fmt"
 
-import "fmt"
+	"github.com/Lumexralph/chimp/token"
+)
 
 func TestNextToken(t *testing.T) {
 	input := `let five = 5;
