@@ -13,6 +13,7 @@ TODO
 - add line number and column number
 - create full support for unicode UTF-8 and emojis
 - use isDigit to create support for floats,  hexadecimal, Octal notation
+- comparison operator >=, <=
 */
 
 // Lexer - the attributes of our lexer
@@ -48,6 +49,22 @@ func (l *Lexer) readChar() {
 	l.readPosition++
 }
 
+func (l *Lexer) peekChar() byte {
+	// when we have read the whole input
+	if l.readPosition >= len(l.input) {
+		return 0
+	}
+
+	return l.input[l.readPosition]
+}
+
+func newToken(t token.Type, char byte) token.Token {
+	return token.Token{
+		Type:    t,
+		Literal: string(char),
+	}
+}
+
 // NextToken - return a token depending on which character it is
 // advance to the next character in the input
 func (l *Lexer) NextToken() token.Token {
@@ -60,21 +77,51 @@ func (l *Lexer) NextToken() token.Token {
 
 	switch l.char {
 	case '=':
-		tok = newToken(token.ASSIGN, l.char)
+		// since the l.readChar() method would have progressed to
+		// the next position, we need to see the character there
+		if l.peekChar() == '=' {
+			// we now have "=="
+			ch := l.char
+			l.readChar() // move to the next position
+			literal := string(ch) + string(l.char) // form the "=="
+			tok = token.Token{Type: token.EQ, Literal: literal}
+		} else {
+			tok = newToken(token.ASSIGN, l.char)
+		}
+	case '+':
+		tok = newToken(token.PLUS, l.char)
+	case '-':
+		tok = newToken(token.MINUS, l.char)
+	case '*':
+		tok = newToken(token.ASTERISK, l.char)
+	case '/':
+		tok = newToken(token.SLASH, l.char)
+	case '!':
+		if l.peekChar() == '=' {
+			// we now have "!="
+			ch := l.char
+			l.readChar() // move to the next position
+			literal := string(ch) + string(l.char) // form the "!="
+			tok = token.Token{Type: token.NOT_EQ, Literal: literal}
+		} else {
+			tok = newToken(token.BANG, l.char)
+		}
 	case ';':
 		tok = newToken(token.SEMICOLON, l.char)
 	case '(':
 		tok = newToken(token.LPAREN, l.char)
 	case ')':
 		tok = newToken(token.RPAREN, l.char)
-	case '+':
-		tok = newToken(token.PLUS, l.char)
 	case ',':
 		tok = newToken(token.COMMA, l.char)
 	case '{':
 		tok = newToken(token.LBRACE, l.char)
 	case '}':
 		tok = newToken(token.RBRACE, l.char)
+	case '>':
+		tok = newToken(token.GT, l.char)
+	case '<':
+		tok = newToken(token.LT, l.char)
 	case 0:
 		tok.Type = token.EOF
 		tok.Literal = ""
@@ -95,13 +142,6 @@ func (l *Lexer) NextToken() token.Token {
 	l.readChar()
 
 	return tok
-}
-
-func newToken(t token.Type, char byte) token.Token {
-	return token.Token{
-		Type:    t,
-		Literal: string(char),
-	}
 }
 
 // readIdentifier - reads in an identifier and advances our
